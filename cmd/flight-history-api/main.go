@@ -26,10 +26,7 @@ func main() {
 		panic(err)
 	}
 
-	// TODO add logger
-	server := &flighthistoryserver.FlightHistoryServer{
-		Config: config,
-	}
+	server := flighthistoryserver.New(config)
 
 	flighthistory.Start(server)
 }
