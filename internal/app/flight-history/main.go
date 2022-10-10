@@ -6,6 +6,7 @@ import (
 )
 
 func Start(server *flighthistoryserver.FlightHistoryServer) *fiber.App {
+	server.Log.Info("Starting server...")
 	app := fiber.New()
 
 	app.Get("/", func(c *fiber.Ctx) error {
