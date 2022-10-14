@@ -1,10 +1,16 @@
 package flighthistoryserver
 
-import "github.com/sirupsen/logrus"
+import (
+	"github.com/kil0ba/flight-history-api/internal/app/store"
+	"github.com/sirupsen/logrus"
+
+	_ "github.com/lib/pq"
+)
 
 type FlightHistoryServer struct {
 	Log    *logrus.Logger
 	Config *Config
+	Store  *store.Store
 }
 
 func New(config *Config) *FlightHistoryServer {
@@ -32,8 +38,11 @@ func New(config *Config) *FlightHistoryServer {
 
 	log.Info("Logger Initialized")
 
+	flightStore := store.New(config.Db, log)
+
 	return &FlightHistoryServer{
 		Config: config,
 		Log:    log,
+		Store:  flightStore,
 	}
 }
