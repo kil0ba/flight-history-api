@@ -36,6 +36,10 @@ func New(config *Config) *FlightHistoryServer {
 		log.SetLevel(logrus.ErrorLevel)
 	}
 
+	if config.Secret == "" {
+		log.Fatal("Secret not provided!")
+	}
+
 	log.Info("Logger Initialized")
 
 	flightStore := store.New(config.Db, log)
