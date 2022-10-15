@@ -9,7 +9,7 @@ type User struct {
 	Email             string `validate:"required,email"`
 	Password          string `validate:"required,min=6"`
 	EncryptedPassword string
-	Login             string `validate:"required,min=6"`
+	Login             string `validate:"required,min=6,alphanum"`
 }
 
 func (u *User) Validate() error {

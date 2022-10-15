@@ -36,12 +36,20 @@ func SignupController(server *flighthistoryserver.FlightHistoryServer) func(*fib
 			return ctx.Status(fiber.StatusBadRequest).JSON(err)
 		}
 
-		existingUser, _ := server.Store.UserRepository.FindByEmail(user.Email)
+		existingUserByEmail, _ := server.Store.UserRepository.FindByEmail(user.Email)
 
-		if existingUser != nil {
+		if existingUserByEmail != nil {
 			server.Log.Info("[SignupController]: User exists")
 			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"message": "user exists",
+			})
+		}
+
+		existingUserByLogin, _ := server.Store.UserRepository.FindByLogin(user.Login)
+
+		if existingUserByLogin != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "login exists",
 			})
 		}
 

@@ -42,3 +42,18 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 
 	return &user, nil
 }
+
+func (r *UserRepository) FindByLogin(login string)  (*model.User, error) {
+	user := model.User{}
+	if err := r.db.QueryRow(
+		"SELECT uuid, email, encrypted_password, login FROM users WHERE login = $1",
+		login,
+		).Scan(&user.Uuid, &user.Email, &user.EncryptedPassword, &user.Login); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errors.New("record not found")
+		}
+		return nil, fiber.ErrInternalServerError
+		}
+
+		return &user, nil
+}
