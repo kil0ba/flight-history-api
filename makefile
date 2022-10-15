@@ -1,3 +1,5 @@
+default: start
+
 # Migrate - либа для миграций бд
 # https://github.com/golang-migrate/migrate
 .PHONY: install-migrate
@@ -18,7 +20,11 @@ test:
 
 .PHONY: migrate-db
 migrate-db:
-	migrate -path migrations -database "postgres://localhost/root?sslmode=disable&user=root&password=example" up
+	migrate -path migrations -database "postgres://localhost/flighthistory?sslmode=disable&user=root&password=example" up
+
+.PHONY: migrate-db
+migrate-db-down:
+	migrate -path migrations -database "postgres://localhost/flighthistory?sslmode=disable&user=root&password=example" down
 
 .PHONY: start
 start:

@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+          "type": "go",
+          "name": "go run",
+          "goExecPath": "/opt/homebrew/Cellar/go/1.19.1/bin/go",
+          "buildTargets": ["$PROJECT_DIR$/cmd/flight-history-api/main.go"],
+        },
+    ]
+}
