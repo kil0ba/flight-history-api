@@ -9,4 +9,5 @@ import (
 func AddAuthRoutes(app fiber.Router, server *flighthistoryserver.FlightHistoryServer) {
 	server.Log.Info("Setting auth routes")
 	app.Post("/signup", auth.SignupController(server))
+	app.Post("/login", auth.LoginController(server))
 }

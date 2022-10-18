@@ -5,12 +5,14 @@ type Config struct {
 	DebugLevel string `toml:"debug_level"`
 	Db         string `toml:"db"`
 	Secret     string `toml:"secret"`
+	JwtSecret  string `toml:"jwtSecret"`
 }
 
 func NewConfig() *Config {
 	return &Config{
 		BindAddr:   ":8080",
 		DebugLevel: "",
-		Secret: "",
+		Secret:     "",
+		JwtSecret:  "",
 	}
 }

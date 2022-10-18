@@ -17,11 +17,10 @@ func SignupController(server *flighthistoryserver.FlightHistoryServer) func(*fib
 	return func(ctx *fiber.Ctx) error {
 		signUpInput := new(SignUpInput)
 
-		if err := ctx.BodyParser(signUpInput); err != nil {
-			server.Log.Error("[SignupController]: Error with parsing body")
-			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"message": err.Error(),
-			})
+		valErr := utils.FillObjectWithInputParams(ctx, signUpInput)
+
+		if valErr != nil {
+			return valErr
 		}
 
 		user := model.User{}

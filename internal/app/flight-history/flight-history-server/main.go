@@ -1,16 +1,31 @@
 package flighthistoryserver
 
 import (
+	"time"
+
 	"github.com/kil0ba/flight-history-api/internal/app/store"
+	jwt_utils "github.com/kil0ba/flight-history-api/internal/app/utils/jwt-utils"
 	"github.com/sirupsen/logrus"
 
 	_ "github.com/lib/pq"
 )
 
+type Duration int64
+
+const (
+	Nanosecond  Duration = 1
+	Microsecond          = 1000 * Nanosecond
+	Millisecond          = 1000 * Microsecond
+	Second               = 1000 * Millisecond
+	Minute               = 60 * Second
+	Hour                 = 60 * Minute
+)
+
 type FlightHistoryServer struct {
-	Log    *logrus.Logger
-	Config *Config
-	Store  *store.Store
+	Log        *logrus.Logger
+	Config     *Config
+	Store      *store.Store
+	JwtManager *jwt_utils.JWTManager
 }
 
 func New(config *Config) *FlightHistoryServer {
@@ -44,9 +59,19 @@ func New(config *Config) *FlightHistoryServer {
 
 	flightStore := store.New(config.Db, log)
 
+	if config.JwtSecret == "" {
+		log.Panic("No JWT secret provided")
+	}
+
+	jwtManager := &jwt_utils.JWTManager{
+		SecretKey:     config.JwtSecret,
+		TokenDuration: time.Duration(24 * Hour),
+	}
+
 	return &FlightHistoryServer{
-		Config: config,
-		Log:    log,
-		Store:  flightStore,
+		Config:     config,
+		Log:        log,
+		Store:      flightStore,
+		JwtManager: jwtManager,
 	}
 }

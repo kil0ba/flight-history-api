@@ -3,3 +3,4 @@ debug_level = 'Trace' # Trace, Debug, Info, Warning, Error, Fatal and Panic.
 
 db = 'postgres://localhost/flighthistory?sslmode=disable&user=root&password=example'
 secret = 'superPuperSecret'
+jwtSecret = 'superPuperJwtToken'
