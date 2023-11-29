@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gofiber/fiber/v2"
-	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server"
+	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
 	model "github.com/kil0ba/flight-history-api/internal/app/models"
 	"github.com/kil0ba/flight-history-api/internal/app/utils"
 )

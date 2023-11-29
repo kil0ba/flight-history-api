@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,9 +21,9 @@ func New(dbString string, log *logrus.Logger) *Store {
 		log.Panic("Error with pinging DB")
 	}
 
-    store := Store{}
+	store := Store{}
 
-	store.UserRepository = NewUserRepository(db)
+	store.UserRepository = NewUserRepository(db, log)
 
 	return &store
 }

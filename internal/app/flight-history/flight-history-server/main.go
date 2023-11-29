@@ -3,6 +3,7 @@ package flighthistoryserver
 import (
 	"time"
 
+	server_config "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
 	"github.com/kil0ba/flight-history-api/internal/app/store"
 	jwt_utils "github.com/kil0ba/flight-history-api/internal/app/utils/jwt-utils"
 	"github.com/sirupsen/logrus"
@@ -21,14 +22,7 @@ const (
 	Hour                 = 60 * Minute
 )
 
-type FlightHistoryServer struct {
-	Log        *logrus.Logger
-	Config     *Config
-	Store      *store.Store
-	JwtManager *jwt_utils.JWTManager
-}
-
-func New(config *Config) *FlightHistoryServer {
+func New(config *server_config.Config) *server_config.FlightHistoryServer {
 	log := logrus.New()
 
 	switch config.DebugLevel {
@@ -68,7 +62,7 @@ func New(config *Config) *FlightHistoryServer {
 		TokenDuration: time.Duration(24 * Hour),
 	}
 
-	return &FlightHistoryServer{
+	return &server_config.FlightHistoryServer{
 		Config:     config,
 		Log:        log,
 		Store:      flightStore,
