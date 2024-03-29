@@ -3,8 +3,8 @@ default: start
 # Migrate - либа для миграций бд
 # https://github.com/golang-migrate/migrate
 .PHONY: install-migrate
-install-migrate:
-	go install github.com/golang-migrate/migrate@latest
+install-migrate-windows:
+	scoop install migrate
 
 .PHONY: install-migrate-mac
 install-migrate-mac:
