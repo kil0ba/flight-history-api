@@ -40,7 +40,7 @@ func (manager *JWTManager) CreateToken(user *model.User) (string, error) {
 func (manager *JWTManager) Verify(accessToken string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(
 		accessToken,
-		&jwt.StandardClaims{},
+		&Claims{},
 		func(t *jwt.Token) (interface{}, error) {
 			_, ok := t.Method.(*jwt.SigningMethodHMAC)
 			if !ok {
