@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gofiber/fiber/v2"
-	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server"
+	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
 	model "github.com/kil0ba/flight-history-api/internal/app/models"
 	"github.com/kil0ba/flight-history-api/internal/app/utils"
 )
@@ -17,11 +17,10 @@ func SignupController(server *flighthistoryserver.FlightHistoryServer) func(*fib
 	return func(ctx *fiber.Ctx) error {
 		signUpInput := new(SignUpInput)
 
-		if err := ctx.BodyParser(signUpInput); err != nil {
-			server.Log.Error("[SignupController]: Error with parsing body")
-			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"message": err.Error(),
-			})
+		valErr := utils.FillObjectWithInputParams(ctx, signUpInput)
+
+		if valErr != nil {
+			return valErr
 		}
 
 		user := model.User{}

@@ -7,6 +7,7 @@ import (
 	"github.com/BurntSushi/toml"
 	flighthistory "github.com/kil0ba/flight-history-api/internal/app/flight-history"
 	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server"
+	serverConfig "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
 )
 
 var (
@@ -29,7 +30,7 @@ func init() {
 
 func main() {
 	flag.Parse()
-	config := flighthistoryserver.NewConfig()
+	config := serverConfig.NewConfig()
 	_, err := toml.DecodeFile(configPath, config)
 
 	if err != nil {

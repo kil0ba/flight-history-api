@@ -3,18 +3,22 @@ package store
 import (
 	"database/sql"
 	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	model "github.com/kil0ba/flight-history-api/internal/app/models"
+	"github.com/sirupsen/logrus"
 )
 
 type UserRepository struct {
-	db *sql.DB
+	db  *sql.DB
+	log *logrus.Logger
 }
 
-func NewUserRepository(db *sql.DB) UserRepository {
+func NewUserRepository(db *sql.DB, log *logrus.Logger) UserRepository {
 	return UserRepository{
-		db: db,
+		db:  db,
+		log: log,
 	}
 }
 
@@ -25,7 +29,7 @@ func (r *UserRepository) Create(u model.User) error {
 		u.Email,
 		u.Password,
 		u.Login,
-		).Scan(&u.Uuid)
+	).Scan(&u.Email)
 }
 
 func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
@@ -33,7 +37,7 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	if err := r.db.QueryRow(
 		"SELECT uuid, email, encrypted_password, login FROM users WHERE email = $1",
 		email,
-		).Scan(&user.Uuid, &user.Email, &user.EncryptedPassword, &user.Login); err != nil {
+	).Scan(&user.Uuid, &user.Email, &user.EncryptedPassword, &user.Login); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errors.New("record not found")
 		}
@@ -43,17 +47,17 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepository) FindByLogin(login string)  (*model.User, error) {
+func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 	user := model.User{}
 	if err := r.db.QueryRow(
 		"SELECT uuid, email, encrypted_password, login FROM users WHERE login = $1",
 		login,
-		).Scan(&user.Uuid, &user.Email, &user.EncryptedPassword, &user.Login); err != nil {
+	).Scan(&user.Uuid, &user.Email, &user.EncryptedPassword, &user.Login); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errors.New("record not found")
 		}
 		return nil, fiber.ErrInternalServerError
-		}
+	}
 
-		return &user, nil
+	return &user, nil
 }
