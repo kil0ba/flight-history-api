@@ -16,9 +16,12 @@ type User struct {
 func (u *User) Validate() error {
 	validate := validator.New()
 	// Register a custom validation function for the "usernameformat" tag
-	validate.RegisterValidation("username", validators.Username)
+	err := validate.RegisterValidation("username", validators.Username)
+	if err != nil {
+		return err
+	}
 
-	err := validate.Struct(u)
+	err = validate.Struct(u)
 
 	if err != nil {
 		return err

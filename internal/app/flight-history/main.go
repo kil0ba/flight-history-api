@@ -1,13 +1,15 @@
 package flighthistory
 
 import (
+	"context"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
 	"github.com/kil0ba/flight-history-api/internal/app/routes"
 )
 
-func Start(server *flighthistoryserver.FlightHistoryServer) *fiber.App {
+func Start(ctx context.Context, server *flighthistoryserver.FlightHistoryServer) *fiber.App {
 	server.Log.Info("Starting server...")
 	app := fiber.New()
 	app.Use(cors.New())
@@ -16,7 +18,7 @@ func Start(server *flighthistoryserver.FlightHistoryServer) *fiber.App {
 		return c.SendString("Hello, World 👋!")
 	})
 
-	routes.AddRoutes(app, server)
+	routes.AddRoutes(ctx, app, server)
 
 	app.Listen(server.Config.BindAddr)
 
