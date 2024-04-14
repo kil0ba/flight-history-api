@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"context"
+
 	"github.com/gofiber/fiber/v2"
 	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
 	model "github.com/kil0ba/flight-history-api/internal/app/models"
@@ -13,11 +15,11 @@ type SignUpInput struct {
 	Email    string `json:"email"`
 }
 
-func SignupController(server *flighthistoryserver.FlightHistoryServer) func(*fiber.Ctx) error {
-	return func(ctx *fiber.Ctx) error {
+func SignupController(ctx context.Context, server *flighthistoryserver.FlightHistoryServer) func(*fiber.Ctx) error {
+	return func(fiberCtx *fiber.Ctx) error {
 		signUpInput := new(SignUpInput)
 
-		valErr := utils.FillObjectWithInputParams(ctx, signUpInput)
+		valErr := utils.FillObjectWithInputParams(fiberCtx, signUpInput)
 
 		if valErr != nil {
 			return valErr
@@ -28,38 +30,38 @@ func SignupController(server *flighthistoryserver.FlightHistoryServer) func(*fib
 		user.Login = signUpInput.Login
 		user.Password = signUpInput.Password
 
-		err := utils.ValidateStruct(user)
+		err := utils.ValidateStruct(&user)
 
 		if err != nil {
 			server.Log.Info("[SignupController]: Validation Error")
-			return ctx.Status(fiber.StatusBadRequest).JSON(err)
+			return fiberCtx.Status(fiber.StatusBadRequest).JSON(err)
 		}
 
-		existingUserByEmail, _ := server.Store.UserRepository.FindByEmail(user.Email)
+		existingUserByEmail, _ := server.Store.UserRepository.FindByEmail(ctx, user.Email)
 
 		if existingUserByEmail != nil {
 			server.Log.Info("[SignupController]: User exists")
-			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			return fiberCtx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"message": "user exists",
 			})
 		}
 
-		existingUserByLogin, _ := server.Store.UserRepository.FindByLogin(user.Login)
+		existingUserByLogin, _ := server.Store.UserRepository.FindByLogin(ctx, user.Login)
 
 		if existingUserByLogin != nil {
-			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			return fiberCtx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"message": "login exists",
 			})
 		}
 
 		user.EncryptedPassword = signUpInput.Password
 
-		if err := server.Store.UserRepository.Create(user); err != nil {
+		if err := server.Store.UserRepository.Create(ctx, user); err != nil {
 			server.Log.Error("Error with saving new user")
 		}
 
 		server.Log.Info("[SignupController]: User created")
-		return ctx.Status(fiber.StatusAlreadyReported).JSON(fiber.Map{
+		return fiberCtx.Status(fiber.StatusAlreadyReported).JSON(fiber.Map{
 			"message": "user created",
 		})
 	}

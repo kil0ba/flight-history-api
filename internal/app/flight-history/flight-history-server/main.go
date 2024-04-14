@@ -1,6 +1,7 @@
 package flighthistoryserver
 
 import (
+	"context"
 	"time"
 
 	server_config "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
@@ -22,7 +23,7 @@ const (
 	Hour                 = 60 * Minute
 )
 
-func New(config *server_config.Config) *server_config.FlightHistoryServer {
+func New(ctx context.Context, config *server_config.Config) *server_config.FlightHistoryServer {
 	log := logrus.New()
 
 	switch config.DebugLevel {
@@ -51,7 +52,7 @@ func New(config *server_config.Config) *server_config.FlightHistoryServer {
 
 	log.Info("Logger Initialized")
 
-	flightStore := store.New(config.Db, log)
+	flightStore := store.New(ctx, config.Db, log)
 
 	if config.JwtSecret == "" {
 		log.Panic("No JWT secret provided")

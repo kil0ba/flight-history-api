@@ -12,7 +12,7 @@ install-migrate-mac:
 
 .PHONY: compose-up
 compose-up:
-	docker-compose --compatibility up --build
+	podman compose --compatibility up --build
 
 .PHONY: test
 test:

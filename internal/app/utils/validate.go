@@ -8,11 +8,13 @@ type ErrorResponse struct {
 	Value       string
 }
 
-var validate = validator.New()
+type Validatable interface {
+	Validate() error
+}
 
-func ValidateStruct[T any](s T) []*ErrorResponse {
+func ValidateStruct(s Validatable) []*ErrorResponse {
 	var errors []*ErrorResponse
-	err := validate.Struct(s)
+	err := s.Validate()
 
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {

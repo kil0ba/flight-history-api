@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"os"
 
@@ -37,7 +38,9 @@ func main() {
 		panic(err)
 	}
 
-	server := flighthistoryserver.New(config)
+	ctx := context.Background()
 
-	flighthistory.Start(server)
+	server := flighthistoryserver.New(ctx, config)
+
+	flighthistory.Start(ctx, server)
 }

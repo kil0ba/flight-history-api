@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"context"
+
 	"github.com/gofiber/fiber/v2"
 	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
 	"github.com/kil0ba/flight-history-api/internal/app/utils"
@@ -11,26 +13,28 @@ type LoginInput struct {
 	Password string `json:"password"`
 }
 
-func LoginController(server *flighthistoryserver.FlightHistoryServer) func(*fiber.Ctx) error {
-	return func(ctx *fiber.Ctx) error {
+func LoginController(ctx context.Context, server *flighthistoryserver.FlightHistoryServer) func(*fiber.Ctx) error {
+	return func(fiberCtx *fiber.Ctx) error {
 		loginInput := new(LoginInput)
 
-		validateErrs := utils.FillObjectWithInputParams(ctx, loginInput)
+		validateErrs := utils.FillObjectWithInputParams(fiberCtx, loginInput)
 
 		if validateErrs != nil {
 			return validateErrs
 		}
 
-		existingUser, err := server.Store.UserRepository.FindByLogin(loginInput.Login)
+		existingUser, err := server.Store.UserRepository.FindByLogin(ctx, loginInput.Login)
 
 		if err != nil {
 			server.Log.Debug("[LoginController] Cannot find an user")
-			return ctx.SendStatus(fiber.StatusInternalServerError)
+			return fiberCtx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "can't find user",
+			})
 		}
 
 		if existingUser == nil {
 			server.Log.Debug("[LoginController]: User not found")
-			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			return fiberCtx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"message": "user doesn't exist",
 			})
 		}
@@ -39,7 +43,7 @@ func LoginController(server *flighthistoryserver.FlightHistoryServer) func(*fibe
 
 		if loginInput.Password != existingUser.EncryptedPassword {
 			server.Log.Debug("[LoginController]: Password is incorrect")
-			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			return fiberCtx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"message": "user doesn't exist",
 			})
 		}
@@ -48,10 +52,10 @@ func LoginController(server *flighthistoryserver.FlightHistoryServer) func(*fibe
 
 		if err != nil {
 			server.Log.Debug("[LoginController] cannot create token")
-			return ctx.SendStatus(fiber.StatusInternalServerError)
+			return fiberCtx.SendStatus(fiber.StatusInternalServerError)
 		}
 
-		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		return fiberCtx.Status(fiber.StatusOK).JSON(fiber.Map{
 			"token": token,
 		})
 	}
