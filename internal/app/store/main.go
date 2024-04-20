@@ -8,7 +8,8 @@ import (
 )
 
 type Store struct {
-	UserRepository UserRepository
+	UserRepository  UserRepository
+	PlaneRepository PlaneRepository
 }
 
 func New(ctx context.Context, dbString string, log *logrus.Logger) *Store {
@@ -25,6 +26,7 @@ func New(ctx context.Context, dbString string, log *logrus.Logger) *Store {
 	store := Store{}
 
 	store.UserRepository = NewUserRepository(conn, log)
+	store.PlaneRepository = NewPlaneRepository(conn, log)
 
 	return &store
 }
