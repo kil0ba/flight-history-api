@@ -1,10 +1,5 @@
 package model
 
-import (
-	"github.com/go-playground/validator/v10"
-	"github.com/kil0ba/flight-history-api/internal/app/models/validators"
-)
-
 type User struct {
 	Uuid              string
 	Email             string `validate:"required,email"`
@@ -14,14 +9,7 @@ type User struct {
 }
 
 func (u *User) Validate() error {
-	validate := validator.New()
-	// Register a custom validation function for the "usernameformat" tag
-	err := validate.RegisterValidation("username", validators.Username)
-	if err != nil {
-		return err
-	}
-
-	err = validate.Struct(u)
+	err := validate.Struct(u)
 
 	if err != nil {
 		return err

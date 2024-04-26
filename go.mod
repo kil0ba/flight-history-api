@@ -1,6 +1,6 @@
 module github.com/kil0ba/flight-history-api
 
-go 1.22
+go 1.22.0
 
 require (
 	github.com/BurntSushi/toml v1.2.0

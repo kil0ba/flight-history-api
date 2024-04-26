@@ -8,14 +8,14 @@ import (
 	"github.com/kil0ba/flight-history-api/internal/app/utils"
 )
 
-type LoginInput struct {
+type LoginRequest struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
 
 func LoginController(ctx context.Context, server *flighthistoryserver.FlightHistoryServer) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
-		loginInput := new(LoginInput)
+		loginInput := new(LoginRequest)
 
 		validateErrs := utils.FillObjectWithInputParams(fiberCtx, loginInput)
 

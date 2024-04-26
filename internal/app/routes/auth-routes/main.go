@@ -1,4 +1,4 @@
-package authroutes
+package auth_routes
 
 import (
 	"context"
