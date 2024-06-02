@@ -1,7 +1,7 @@
 package model
 
 type Plane struct {
-	ID           string
+	ID           int
 	Name         string `validate:"required"`
 	IataCode     string
 	IcaoCode     string

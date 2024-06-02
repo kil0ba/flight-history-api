@@ -3,17 +3,17 @@ package store
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	model "github.com/kil0ba/flight-history-api/internal/app/models"
 	"github.com/sirupsen/logrus"
 )
 
 type PlaneRepository struct {
-	db  *pgx.Conn
+	db  *pgxpool.Pool
 	log *logrus.Logger
 }
 
-func NewPlaneRepository(db *pgx.Conn, log *logrus.Logger) PlaneRepository {
+func NewPlaneRepository(db *pgxpool.Pool, log *logrus.Logger) PlaneRepository {
 	return PlaneRepository{
 		db:  db,
 		log: log,
@@ -71,4 +71,51 @@ func (pr *PlaneRepository) GetList(ctx context.Context, count int, page int) ([]
 	}
 
 	return planes, nil
+}
+
+const searchCount = 10
+const planeSearch = "Plane Search: "
+
+func (pr *PlaneRepository) Search(ctx context.Context, query string, page int) (*[]model.Plane, error) {
+	if page < 1 {
+		page = 1
+	}
+
+	planes := []model.Plane{}
+
+	rows, err := pr.db.Query(ctx, `
+	SELECT
+	    planes.*
+	FROM
+	    planes
+	JOIN
+	(
+	    SELECT
+	        id,
+	        LOWER(COALESCE(name,'') || COALESCE(manufacturer,'') || COALESCE(iata_code ,'') || coalesce(icao_code, '')) AS concatenated
+	    FROM
+	        planes
+	) T ON T.id = planes.id
+	WHERE
+	    T.concatenated LIKE '%$1%'
+	LIMIT $2 OFFSET $3;
+		`, query, searchCount, (page-1)*searchCount)
+
+	if err != nil {
+		pr.log.WithError(err).Error(planeSearch, "Failed to search planes")
+		return nil, err
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		plane := model.Plane{}
+		err := rows.Scan(&plane.Name, &plane.IataCode, &plane.IcaoCode, &plane.Manufacturer, &plane.Country)
+		if err != nil {
+			pr.log.WithError(err).Error(planeSearch, "Failed to get plane row")
+			return nil, err
+		}
+		planes = append(planes, plane)
+	}
+
+	return &planes, nil
 }
