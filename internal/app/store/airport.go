@@ -59,7 +59,8 @@ func (ar *AirportRepository) Search(ctx context.Context, query string, page int)
 	WHERE
 	    T.concatenated LIKE '%$1%'
 	LIMIT $2 OFFSET $3;
-		`, query, searchCount, (page-1)*searchCount)
+		`, query, searchCount, (page-1)*searchCount,
+	)
 
 	if err != nil {
 		ar.log.WithError(err).Error(airportSearch, "Failed to search aiports")

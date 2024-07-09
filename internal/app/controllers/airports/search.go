@@ -26,6 +26,16 @@ func SearchAirportsController(ctx context.Context, server *flighthistoryserver.F
 			return validateErrs
 		}
 
-		return nil
+		airport, err := server.Store.AirportRepository.Search(ctx, searchAirportsRequest.Query, searchAirportsRequest.Count)
+
+		if err != nil {
+			return fiberCtx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "error searching airports",
+			})
+		}
+
+		return fiberCtx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"airport": airport,
+		})
 	}
 }
