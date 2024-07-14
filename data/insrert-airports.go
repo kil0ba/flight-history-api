@@ -20,7 +20,7 @@ type Airport struct {
 	Country   string
 	Latitude  float64
 	Longitude float64
-	Timezone  int
+	Timezone  string
 }
 
 // parseCSV parses the CSV file and returns a slice of Airport structs
@@ -64,12 +64,6 @@ func parseCSV(filePath string) ([]Airport, error) {
 			continue
 		}
 
-		timezone, err := strconv.Atoi(record[9])
-		if err != nil {
-			log.Printf("Invalid Timezone at row %d: %v", i, err)
-			continue
-		}
-
 		airport := Airport{
 			ID:        id,
 			Name:      record[1],
@@ -78,7 +72,7 @@ func parseCSV(filePath string) ([]Airport, error) {
 			Country:   record[3],
 			Latitude:  latitude,
 			Longitude: longitude,
-			Timezone:  timezone,
+			Timezone:  record[9],
 		}
 
 		airports = append(airports, airport)
