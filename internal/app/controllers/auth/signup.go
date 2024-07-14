@@ -15,6 +15,18 @@ type SignUpInput struct {
 	Email    string `json:"email"`
 }
 
+// SignupController Signup
+//
+//	@Summary   	  User Signup
+//	@Description  create new account
+//	@Tags         auth
+//	@Accept       json
+//	@Produce      json
+//	@Param        req body auth.SignUpInput true "login body"
+//	@Success      200  {object}  responses.DefaultResponse
+//	@Failure      400  {object}  responses.DefaultResponse
+//	@Failure      500  {string}  responses.DefaultResponse
+//	@Router       /auth/signup [post]
 func SignupController(ctx context.Context, server *flighthistoryserver.FlightHistoryServer) func(*fiber.Ctx) error {
 	return func(fiberCtx *fiber.Ctx) error {
 		signUpInput := new(SignUpInput)

@@ -1,0 +1,293 @@
+definitions:
+  airports.SearchAirportsRequest:
+    properties:
+      count:
+        type: integer
+      page:
+        type: integer
+      query:
+        type: string
+    type: object
+  airports.SearchAirportsResponse:
+    properties:
+      airports:
+        items:
+          $ref: '#/definitions/model.Airport'
+        type: array
+    type: object
+  auth.LoginRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  auth.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  auth.SignUpInput:
+    properties:
+      email:
+        type: string
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  model.Airport:
+    properties:
+      city:
+        type: string
+      code:
+        type: string
+      country:
+        type: string
+      id:
+        type: integer
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      timezone:
+        type: integer
+    required:
+    - city
+    - code
+    - country
+    - latitude
+    - longitude
+    - name
+    - timezone
+    type: object
+  model.Plane:
+    properties:
+      country:
+        type: string
+      iataCode:
+        type: string
+      icaoCode:
+        type: string
+      id:
+        type: integer
+      manufacturer:
+        type: string
+      name:
+        type: string
+    required:
+    - country
+    - name
+    type: object
+  planes.GetPlanesRequest:
+    properties:
+      count:
+        type: integer
+      page:
+        type: integer
+    type: object
+  planes.GetPlanesResponse:
+    properties:
+      airports:
+        items:
+          $ref: '#/definitions/model.Plane'
+        type: array
+    type: object
+  planes.SearchPlanesRequest:
+    properties:
+      count:
+        type: integer
+      page:
+        type: integer
+      query:
+        type: string
+    type: object
+  planes.SearchPlanesResponse:
+    properties:
+      planes:
+        items:
+          $ref: '#/definitions/model.Plane'
+        type: array
+    type: object
+  responses.DefaultResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    name: API Support
+  description: Flight History API documentation.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Flight History API
+  version: "0.1"
+paths:
+  /airports/searchAirports:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: airports body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/airports.SearchAirportsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/airports.SearchAirportsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Search Airports
+      tags:
+      - airports
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: get JWT token
+      parameters:
+      - description: login body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: User login
+      tags:
+      - auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: create new account
+      parameters:
+      - description: login body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/auth.SignUpInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: User Signup
+      tags:
+      - auth
+  /planes/getPlanes:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: airports body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/planes.GetPlanesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/planes.GetPlanesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get planes
+      tags:
+      - planes
+  /planes/searchPlanes:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: airports body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/planes.SearchPlanesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/planes.SearchPlanesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Search Planes
+      tags:
+      - planes
+securityDefinitions:
+  ApiKeyAuth:
+    description: Description for what is this security definition being used
+    in: header
+    name: Authorization
+    type: apiKey
+  BasicAuth:
+    type: basic
+  OAuth2Application:
+    flow: application
+    scopes:
+      admin: Grants read and write access to administrative information
+      write: Grants write access
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"

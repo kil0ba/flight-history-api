@@ -16,7 +16,7 @@ func TestPlane_Validate(t *testing.T) {
 		{
 			name: "Valid Plane",
 			plane: model.Plane{
-				ID:           "1",
+				ID:           1,
 				Name:         "Boeing 747",
 				IataCode:     "BA",
 				IcaoCode:     "BOE",
@@ -28,7 +28,7 @@ func TestPlane_Validate(t *testing.T) {
 		{
 			name: "Invalid Plane - Missing Name",
 			plane: model.Plane{
-				ID:           "2",
+				ID:           2,
 				IataCode:     "AA",
 				IcaoCode:     "AIR",
 				Manufacturer: "Airbus",
@@ -39,7 +39,7 @@ func TestPlane_Validate(t *testing.T) {
 		{
 			name: "Invalid Plane - Missing Country",
 			plane: model.Plane{
-				ID:           "3",
+				ID:           3,
 				Name:         "Cessna 172",
 				IataCode:     "CS",
 				IcaoCode:     "CES",

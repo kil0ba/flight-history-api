@@ -7,16 +7,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	model "github.com/kil0ba/flight-history-api/internal/app/models"
 	"github.com/sirupsen/logrus"
 )
 
 type UserRepository struct {
-	db  *pgx.Conn
+	db  *pgxpool.Pool
 	log *logrus.Logger
 }
 
-func NewUserRepository(db *pgx.Conn, log *logrus.Logger) UserRepository {
+func NewUserRepository(db *pgxpool.Pool, log *logrus.Logger) UserRepository {
 	return UserRepository{
 		db:  db,
 		log: log,

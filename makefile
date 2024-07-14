@@ -19,13 +19,21 @@ test:
 	go test -v -race -timeout 30s ./...
 
 .PHONY: migrate-db
-migrate-db:
+migrate:
 	migrate -path migrations -database "postgres://localhost/flighthistory?sslmode=disable&user=root&password=example" up
 
 .PHONY: migrate-db
-migrate-db-down:
+migrate-down:
 	migrate -path migrations -database "postgres://localhost/flighthistory?sslmode=disable&user=root&password=example" down
 
 .PHONY: start
 start:
 	go run ./cmd/flight-history-api/main.go
+
+.PHONY: swag
+swag:
+	swag init -g ./cmd/flight-history-api/main.go -o ./docs
+
+.PHONY: install-swag
+install-swag:
+	go install github.com/swaggo/swag/cmd/swag@latest

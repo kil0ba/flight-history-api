@@ -3,30 +3,32 @@ package store
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/sirupsen/logrus"
 )
 
 type Store struct {
-	UserRepository  UserRepository
-	PlaneRepository PlaneRepository
+	UserRepository    UserRepository
+	PlaneRepository   PlaneRepository
+	AirportRepository AirportRepository
 }
 
 func New(ctx context.Context, dbString string, log *logrus.Logger) *Store {
-	conn, err := pgx.Connect(ctx, dbString)
+	dbpool, err := pgxpool.New(ctx, dbString)
 
 	if err != nil {
 		log.Panic("Error with open connection to DB", err)
 	}
 
-	if err := conn.Ping(ctx); err != nil {
+	if err := dbpool.Ping(ctx); err != nil {
 		log.Panic("Error with pinging DB")
 	}
 
 	store := Store{}
 
-	store.UserRepository = NewUserRepository(conn, log)
-	store.PlaneRepository = NewPlaneRepository(conn, log)
+	store.UserRepository = NewUserRepository(dbpool, log)
+	store.PlaneRepository = NewPlaneRepository(dbpool, log)
+	store.AirportRepository = NewAirportRepositry(dbpool, log)
 
 	return &store
 }
