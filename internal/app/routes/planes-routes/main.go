@@ -11,4 +11,5 @@ import (
 func AddPlanesRoutes(ctx context.Context, app fiber.Router, server *flighthistoryserver.FlightHistoryServer) {
 	server.Log.Info("Setting plane routes")
 	app.Post("/getPlanes", planes.GetPlanesController(ctx, server))
+	app.Post("/searchPlanes", planes.SearchPlanesController(ctx, server))
 }

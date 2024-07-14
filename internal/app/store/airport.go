@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"strings"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	model "github.com/kil0ba/flight-history-api/internal/app/models"
@@ -36,13 +37,14 @@ func (ar *AirportRepository) Get(ctx context.Context, id int) (*model.Airport, e
 
 const airportSearch = "Airport Search: "
 
-func (ar *AirportRepository) Search(ctx context.Context, query string, page int) ([]model.Airport, error) {
+func (ar *AirportRepository) Search(ctx context.Context, query string, page int, count int) ([]model.Airport, error) {
 	if page < 1 {
 		page = 1
 	}
 
 	airports := []model.Airport{}
 
+	searchQuery := "%" + strings.ToLower(query) + "%"
 	rows, err := ar.db.Query(ctx, `
 	SELECT
 	    airports.*
@@ -52,14 +54,14 @@ func (ar *AirportRepository) Search(ctx context.Context, query string, page int)
 	(
 	    SELECT
 	        id,
-	        LOWER(COALESCE(name,'') || COALESCE(code,'') || COALESCE(city ,'')) AS concatenated
+	        LOWER(COALESCE(name,'') || COALESCE(code,'') || COALESCE(city ,'') || COALESCE(country ,'')) AS concatenated
 	    FROM
 	        airports
 	) T ON T.id = airports.id
 	WHERE
-	    T.concatenated LIKE '%$1%'
+	    T.concatenated LIKE $1
 	LIMIT $2 OFFSET $3;
-		`, query, searchCount, (page-1)*searchCount,
+		`, searchQuery, searchCount, (page-1)*searchCount,
 	)
 
 	if err != nil {
@@ -70,7 +72,7 @@ func (ar *AirportRepository) Search(ctx context.Context, query string, page int)
 	defer rows.Close()
 	for rows.Next() {
 		airport := model.Airport{}
-		err := rows.Scan(&airport.ID, &airport.Name, &airport.Code, &airport.City, &airport.Country)
+		err := rows.Scan(&airport.ID, &airport.Name, &airport.Code, &airport.City, &airport.Country, &airport.Latitude, &airport.Longitude, &airport.Timezone)
 		if err != nil {
 			ar.log.WithError(err).Error(planeSearch, "Failed to get airport row")
 			return nil, err

@@ -29,3 +29,11 @@ migrate-down:
 .PHONY: start
 start:
 	go run ./cmd/flight-history-api/main.go
+
+.PHONY: swag
+swag:
+	swag init -g ./cmd/flight-history-api/main.go -o ./docs
+
+.PHONY: install-swag
+install-swag:
+	go install github.com/swaggo/swag/cmd/swag@latest

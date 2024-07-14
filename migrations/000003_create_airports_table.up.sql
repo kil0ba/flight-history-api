@@ -5,5 +5,6 @@ CREATE TABLE IF NOT EXISTS airports (
     city VARCHAR(255) NOT NULL,
     country VARCHAR(255) NOT NULL,
     latitude DECIMAL(9,6) NOT NULL,
-    longitude DECIMAL(9,6) NOT NULL
+    longitude DECIMAL(9,6) NOT NULL,
+    timezone SMALLINT NOT NULL
 )

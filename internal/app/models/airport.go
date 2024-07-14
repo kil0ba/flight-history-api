@@ -8,6 +8,7 @@ type Airport struct {
 	Country   string  `validate:"required"`
 	Latitude  float32 `validate:"required"`
 	Longitude float32 `validate:"required"`
+	Timezone  int     `validate:"required"`
 }
 
 func (u *Airport) Validate() error {

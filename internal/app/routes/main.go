@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
+	_ "github.com/kil0ba/flight-history-api/docs"
 	flighthistoryserver "github.com/kil0ba/flight-history-api/internal/app/flight-history/flight-history-server/server-config"
 	airport_routes "github.com/kil0ba/flight-history-api/internal/app/routes/airport-routes"
 	authroutes "github.com/kil0ba/flight-history-api/internal/app/routes/auth-routes"
@@ -13,7 +15,8 @@ import (
 func AddRoutes(ctx context.Context, app *fiber.App, server *flighthistoryserver.FlightHistoryServer) {
 	auth := app.Group("/auth")
 	planes := app.Group("/planes")
-	airports := app.Group("/airport")
+	airports := app.Group("/airports")
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	authroutes.AddAuthRoutes(ctx, auth, server)
 	planesroutes.AddPlanesRoutes(ctx, planes, server)
