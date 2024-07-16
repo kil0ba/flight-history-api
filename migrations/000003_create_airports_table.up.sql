@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS airports (
     ID INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    code VARCHAR(10) NOT NULL,
+    code VARCHAR(5) NOT NULL,
     city VARCHAR(255) NOT NULL,
     country VARCHAR(255) NOT NULL,
     latitude DECIMAL(9,6) NOT NULL,
