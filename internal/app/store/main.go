@@ -11,6 +11,7 @@ type Store struct {
 	UserRepository    UserRepository
 	PlaneRepository   PlaneRepository
 	AirportRepository AirportRepository
+	AirlineRepository AirlineRepository
 }
 
 func New(ctx context.Context, dbString string, log *logrus.Logger) *Store {
@@ -29,6 +30,7 @@ func New(ctx context.Context, dbString string, log *logrus.Logger) *Store {
 	store.UserRepository = NewUserRepository(dbpool, log)
 	store.PlaneRepository = NewPlaneRepository(dbpool, log)
 	store.AirportRepository = NewAirportRepositry(dbpool, log)
+	store.AirlineRepository = NewAirlineRepository(dbpool, log)
 
 	return &store
 }

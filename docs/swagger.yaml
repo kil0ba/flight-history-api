@@ -1,4 +1,20 @@
 definitions:
+  airlines.SearchAirlinesRequest:
+    properties:
+      count:
+        type: integer
+      page:
+        type: integer
+      query:
+        type: string
+    type: object
+  airlines.SearchAirlinesResponse:
+    properties:
+      airlines:
+        items:
+          $ref: '#/definitions/model.Airline'
+        type: array
+    type: object
   airports.SearchAirportsRequest:
     properties:
       count:
@@ -36,6 +52,29 @@ definitions:
       password:
         type: string
     type: object
+  model.Airline:
+    properties:
+      active:
+        type: boolean
+      alias:
+        type: string
+      callsign:
+        type: string
+      country:
+        type: string
+      iata:
+        type: string
+      icao:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - active
+    - country
+    - name
+    type: object
   model.Airport:
     properties:
       city:
@@ -53,7 +92,7 @@ definitions:
       name:
         type: string
       timezone:
-        type: integer
+        type: string
     required:
     - city
     - code
@@ -128,6 +167,35 @@ info:
   title: Flight History API
   version: "0.1"
 paths:
+  /airlines/searchAirlines:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: airlines body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/airlines.SearchAirlinesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/airlines.SearchAirlinesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.DefaultResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Search Airlines
+      tags:
+      - airlines
   /airports/searchAirports:
     post:
       consumes:

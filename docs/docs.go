@@ -22,6 +22,51 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/airlines/searchAirlines": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "airlines"
+                ],
+                "summary": "Search Airlines",
+                "parameters": [
+                    {
+                        "description": "airlines body",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/airlines.SearchAirlinesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/airlines.SearchAirlinesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.DefaultResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/airports/searchAirports": {
             "post": {
                 "consumes": [
@@ -251,6 +296,31 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "airlines.SearchAirlinesRequest": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "query": {
+                    "type": "string"
+                }
+            }
+        },
+        "airlines.SearchAirlinesResponse": {
+            "type": "object",
+            "properties": {
+                "airlines": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Airline"
+                    }
+                }
+            }
+        },
         "airports.SearchAirportsRequest": {
             "type": "object",
             "properties": {
@@ -309,6 +379,40 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Airline": {
+            "type": "object",
+            "required": [
+                "active",
+                "country",
+                "name"
+            ],
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "alias": {
+                    "type": "string"
+                },
+                "callsign": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "iata": {
+                    "type": "string"
+                },
+                "icao": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Airport": {
             "type": "object",
             "required": [
@@ -343,7 +447,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "timezone": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
