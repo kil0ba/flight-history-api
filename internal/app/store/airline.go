@@ -41,7 +41,7 @@ func (ar *AirlineRepository) Search(ctx context.Context, query string, page int,
 	(
 	    SELECT
 	        id,
-	        LOWER(COALESCE(name,'') || COALESCE(alias,'') || COALESCE(iata ,'') || COALESCE(icao ,'') || COALESCE(callsign ,'') || COALESCE(country ,'')) AS concatenated
+	        LOWER( COALESCE(icao ,'') || COALESCE(name,'') || COALESCE(alias,'') || COALESCE(iata ,'') || COALESCE(callsign ,'') || COALESCE(country ,'')) AS concatenated
 	    FROM
 	        airlines
 	) T ON T.id = airlines.id
@@ -63,12 +63,12 @@ func (ar *AirlineRepository) Search(ctx context.Context, query string, page int,
 		err := rows.Scan(
 			&airline.ID,
 			&airline.Name,
-			&airline.Active,
 			&airline.Alias,
-			&airline.Country,
 			&airline.IATA,
 			&airline.ICAO,
 			&airline.Callsign,
+			&airline.Country,
+			&airline.Active,
 		)
 		if err != nil {
 			ar.log.WithError(err).Error(airlineSearch, "Failed to get row")
